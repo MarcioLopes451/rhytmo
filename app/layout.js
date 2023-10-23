@@ -9,7 +9,7 @@ const nunito = Nunito({
 export default function RootLayout({children}) {
   return (
     <html lang="en">
-      <body>
+      <body className="bg-black">
         <main className={nunito.className}>{children}</main>
       </body>
     </html>
