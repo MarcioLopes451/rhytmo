@@ -13,6 +13,15 @@ module.exports = {
         'blue': '#0088FF',
       }
     },
+    keyframes: {
+      scrolling: {
+        '0%': { transform: 'translateX(0)'},
+        '100%': { transform: 'translateX(-100%)'}
+      }
+    },
+    animation: {
+      scrollRightToLeft: 'scrolling 60s linear infinite'
+    }
   },
   plugins: [],
 }

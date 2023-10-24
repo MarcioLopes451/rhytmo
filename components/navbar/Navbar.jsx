@@ -8,7 +8,6 @@ export default function Navbar() {
   const [albums, setAlbums] = useState([]);
 
   const CLIENT_ID = "eb3e79d2df62424894b6d908f86fadd1";
-  const CLIENT_SECRET = "0ae1d1c5ebed48aa83c363f20f46259a";
   const REDIRECT_URI = "http://localhost:3000/";
   const auth = "https://accounts.spotify.com/authorize";
   const res = "token";
@@ -41,8 +40,6 @@ export default function Navbar() {
   };
   const newReleasesUrl = "https://api.spotify.com/v1/browse/new-releases";
 
-  const base = btoa(`${CLIENT_ID}:${CLIENT_SECRET}`);
-
   axios
     .get(newReleasesUrl, { headers: newReleases })
     .then((newReleasesResponse) => {
@@ -58,21 +55,30 @@ export default function Navbar() {
     }, []);
 
   const renderAlbums = () => {
-    return albums.map((album) => (
-      <div key={album.id} className="mt-2">
-        <div className="flex flex-row justify-center flex-nowrap">
-          <Image src={album.images[0].url} alt="img" width={375} height={300} />
+    return (
+      <div className="w-[6000px] overflow-hidden">
+        <div className="flex mt-2 animate-scrollRightToLeft">
+          {albums.map((album) => (
+            <div key={album.id} className="w-[300px] h-[300px] relative">
+              <Image
+                src={album.images[0].url}
+                alt="img"
+                layout="fill"
+                objectFit="cover"
+              />
+            </div>
+          ))}
         </div>
       </div>
-    ));
+    );
   };
 
   return (
     <div className="w-full h-10">
-      <div className="flex justify-end items-center px-8 pt-2 gap-16">
-        <h1 className="font-semibold">RYHTMO</h1>
-        <div>
-          {!token ? (
+      <div>
+        {!token ? (
+          <div className="flex justify-end items-center gap-16 px-8 pt-2">
+            <h1 className="font-semibold">RYHTMO</h1>
             <a
               href={`${auth}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${res}`}
             >
@@ -80,18 +86,22 @@ export default function Navbar() {
                 login
               </button>
             </a>
-          ) : (
-            <button
-              onClick={logout}
-              className="bg-blue w-16 rounded-md text-base"
-            >
-              logout
-            </button>
-          )}
-        </div>
+          </div>
+        ) : (
+          <div>
+            <div className="flex justify-end items-center gap-16 px-8 pt-2">
+              <h1 className="font-semibold">RYHTMO</h1>
+              <button
+                onClick={logout}
+                className="bg-blue w-16 rounded-md text-base"
+              >
+                logout
+              </button>
+            </div>
+            <div>{renderAlbums()}</div>
+          </div>
+        )}
       </div>
-
-      <div>{renderAlbums()}</div>
     </div>
   );
 }
