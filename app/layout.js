@@ -10,7 +10,7 @@ export default function RootLayout({children}) {
   return (
     <html lang="en">
       <body className="bg-black">
-        <main className={nunito.className}>{children}</main>
+        <main className={nunito.className} style={{ overflow: "hidden", height: "100%" }}>{children}</main>
       </body>
     </html>
   );

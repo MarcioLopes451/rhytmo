@@ -1,11 +1,16 @@
 "use client";
 import { useState, useEffect } from "react";
+import burger from "@/public/2203512_burger_menu_more_panel_icon.png";
 import Image from "next/image";
-import axios from "axios";
+import MobileNav from "./MobileNav";
 
 export default function Navbar() {
   const [token, setToken] = useState("");
-  const [albums, setAlbums] = useState([]);
+  const [state, setState] = useState(false);
+
+  function handleClick() {
+    setState(!state);
+  }
 
   const CLIENT_ID = "eb3e79d2df62424894b6d908f86fadd1";
   const REDIRECT_URI = "http://localhost:3000/";
@@ -35,73 +40,34 @@ export default function Navbar() {
     window.localStorage.removeItem("token");
   };
 
-  const newReleases = {
-    Authorization: `Bearer ${token}`,
-  };
-  const newReleasesUrl = "https://api.spotify.com/v1/browse/new-releases";
-
-  axios
-    .get(newReleasesUrl, { headers: newReleases })
-    .then((newReleasesResponse) => {
-      const newReleasesData = newReleasesResponse.data;
-
-      // Extract the album data from the API response
-      const albums = newReleasesData.albums.items;
-
-      setAlbums(albums);
-    })
-    .catch((error) => {
-      console.error("Error fetching new releases:", error);
-    }, []);
-
-  const renderAlbums = () => {
-    return (
-      <div className="w-[6000px] overflow-hidden">
-        <div className="flex mt-2 animate-scrollRightToLeft">
-          {albums.map((album) => (
-            <div key={album.id} className="w-[300px] h-[300px] relative">
-              <Image
-                src={album.images[0].url}
-                alt="img"
-                layout="fill"
-                objectFit="cover"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
   return (
-    <div className="w-full h-10">
-      <div>
-        {!token ? (
-          <div className="flex justify-end items-center gap-16 px-8 pt-2">
-            <h1 className="font-semibold">RYHTMO</h1>
-            <a
-              href={`${auth}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${res}`}
-            >
-              <button className="bg-blue w-16 rounded-md text-base">
-                login
-              </button>
-            </a>
+    <div className="w-full h-full">
+      {!token ? (
+        <div className="flex justify-center items-center flex-col gap-10 mt-[388px]">
+          <h1 className="font-semibold">RYHTMO</h1>
+          <a
+            href={`${auth}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${res}`}
+          >
+            <button className="bg-blue rounded-md text-base px-3">
+              Login via spotify
+            </button>
+          </a>
+        </div>
+      ) : (
+        <div>
+          <div className="flex justify-between items-center gap-16 px-7 py-2 mt-2">
+            <h1 className="font-bold text-[20px]">RYHTMO</h1>
+            <Image
+              src={burger}
+              alt="burger menu"
+              width={30}
+              height={30}
+              onClick={handleClick}
+            />
           </div>
-        ) : (
-          <div>
-            <div className="flex justify-end items-center gap-16 px-8 pt-2">
-              <h1 className="font-semibold">RYHTMO</h1>
-              <button
-                onClick={logout}
-                className="bg-blue w-16 rounded-md text-base"
-              >
-                logout
-              </button>
-            </div>
-            <div>{renderAlbums()}</div>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
+      {state && <MobileNav isOpen={state} onClose={handleClick} />}
     </div>
   );
 }
